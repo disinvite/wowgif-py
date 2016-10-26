@@ -1,3 +1,4 @@
+import math
 from PIL import Image, ImageFont, ImageDraw
 
 def get_stamp(text):
@@ -27,8 +28,10 @@ def rotated_frame(text,horiz_size,angle):
     return image
     
 if __name__ == '__main__':
-    ns = range(-45,45,4)
+    degs = [30 * math.cos(i * math.pi / 180.0) for i in range(0,360)]
+    ns = [degs[x] for x in range(0,len(degs),10)]
+    print ns
     for i in range(len(ns)):
-        x = rotated_frame('TEST',400 + 20*i, ns[i])
+        x = rotated_frame('TEST',400 + int(5*ns[i]), ns[i])
         filename = 'test/a/bla{}.png'.format(i)
         x.save(filename, "PNG")
