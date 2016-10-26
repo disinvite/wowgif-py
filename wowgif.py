@@ -6,7 +6,7 @@ def get_stamp(text):
     x,y = font.getsize(text)
     image = Image.new('RGB',(x,y))
     draw = ImageDraw.Draw(image)
-    draw.text((0, 0), text, font=font)
+    draw.text((0, 0), text, font=font, fill=(244,34,114,0))
     return image.crop(image.getbbox())
 
 def rotated_frame(text,horiz_size,angle):
@@ -28,10 +28,12 @@ def rotated_frame(text,horiz_size,angle):
     return image
     
 if __name__ == '__main__':
-    degs = [30 * math.cos(i * math.pi / 180.0) for i in range(0,360)]
-    ns = [degs[x] for x in range(0,len(degs),10)]
+    rotate_pts = [20 * math.cos(i * math.pi / 180.0) for i in range(0,360)]
+    zoom_pts   = [100 * math.sin(i * math.pi / 180.0) for i in range(0,360)]
+    ns = range(0,360,10)
     print ns
-    for i in range(len(ns)):
-        x = rotated_frame('TEST',400 + int(5*ns[i]), ns[i])
+    
+    for i, v in enumerate(ns):
+        x = rotated_frame('TEST',500 + int(zoom_pts[v]), rotate_pts[v])
         filename = 'test/a/bla{}.png'.format(i)
         x.save(filename, "PNG")
