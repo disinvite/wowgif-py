@@ -23,7 +23,7 @@ def get_stamp(lines):
     
     return image.crop(image.getbbox())
 
-def rotated_frame(text,horiz_size,angle):
+def rotated_frame(text,horiz_size,angle,pos_x,pos_y):
     s = get_stamp(text)
     x,y = s.size
     aspect = 1.0*x/y
@@ -35,8 +35,8 @@ def rotated_frame(text,horiz_size,angle):
     
     image = Image.new('RGB',(blank_size,blank_size))
     
-    tx = int(0.5 * (blank_size - s.size[0]))
-    ty = int(0.5 * (blank_size - s.size[1]))
+    tx = int(pos_x - (0.5 * s.size[0]))
+    ty = int(pos_y - (0.5 * s.size[1]))
     
     image.paste( s, (tx,ty) )
     return image
@@ -49,17 +49,19 @@ def ffmpeg(frame_prefix,filename):
     
 def create(frames):
     for i, frame in enumerate(frames):
-        x = rotated_frame(['IMPACT'], frame['zoom'], frame['angle'])
+        x = rotated_frame(['UP \'N DOWN'], frame['zoom'], frame['angle'], frame['x'], frame['y'])
         filename = 'test/a/bla{}.png'.format(i)
         x.save(filename, "PNG")
         
     ffmpeg('bla','test.gif')
     
 if __name__ == '__main__':
-    rotate_pts = [10 * math.cos(3 * i * math.pi / 180.0) for i in range(0,360)]
-    zoom_pts   = [int( 300 + (50 * math.sin(i * math.pi / 180.0)) ) for i in range(0,360)]
+    rotate_pts = [10 * math.cos(i * math.pi / 180.0) for i in range(0,360)]
+    #zoom_pts   = [int( 300 + (50 * math.sin(i * math.pi / 180.0)) ) for i in range(0,360)]
+    zoom_pts = [300 for i in range(360)]
+    y_pts = [200 + 30 * math.cos(i * math.pi / 180.0) for i in range(0,360)]
     
-    frames = [{'zoom': zoom_pts[i], 'angle': rotate_pts[i]} for i in range(0,360,10)]
+    frames = [{'zoom': zoom_pts[i], 'angle': rotate_pts[i], 'x':200, 'y': y_pts[i]} for i in range(0,360,10)]
     create(frames)
     ffmpeg('bla','test.gif')
     
