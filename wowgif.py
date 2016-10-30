@@ -47,15 +47,19 @@ def ffmpeg(frame_prefix,filename):
     '-loglevel','panic',
     '-y','-r','30','-i',x,filename])
     
-if __name__ == '__main__':
-    rotate_pts = [10 * math.cos(3 * i * math.pi / 180.0) for i in range(0,360)]
-    zoom_pts   = [50 * math.sin(i * math.pi / 180.0) for i in range(0,360)]
-    ns = range(0,360,10)
-    
-    for i, v in enumerate(ns):
-        x = rotated_frame(['IMPACT'],300 + int(zoom_pts[v]), rotate_pts[v])
+def create(frames):
+    for i, frame in enumerate(frames):
+        x = rotated_frame(['IMPACT'], frame['zoom'], frame['angle'])
         filename = 'test/a/bla{}.png'.format(i)
         x.save(filename, "PNG")
         
+    ffmpeg('bla','test.gif')
+    
+if __name__ == '__main__':
+    rotate_pts = [10 * math.cos(3 * i * math.pi / 180.0) for i in range(0,360)]
+    zoom_pts   = [int( 300 + (50 * math.sin(i * math.pi / 180.0)) ) for i in range(0,360)]
+    
+    frames = [{'zoom': zoom_pts[i], 'angle': rotate_pts[i]} for i in range(0,360,10)]
+    create(frames)
     ffmpeg('bla','test.gif')
     
