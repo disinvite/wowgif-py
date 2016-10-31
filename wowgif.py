@@ -2,8 +2,10 @@ import math
 from subprocess import Popen
 from PIL import Image, ImageFont, ImageDraw
 
-def get_stamp(lines):
+def get_stamp(textin):
     font = ImageFont.truetype("impact.ttf", 200)
+    
+    lines = textin.split('\n')
     
     sizes = [font.getsize(text) for text in lines]
     x = max(t[0] for t in sizes)
@@ -23,45 +25,50 @@ def get_stamp(lines):
     
     return image.crop(image.getbbox())
 
-def rotated_frame(text,horiz_size,angle,pos_x,pos_y):
-    s = get_stamp(text)
+def render(image,obj):
+    s = get_stamp(obj['text'])
     x,y = s.size
     aspect = 1.0*x/y
     
-    blank_size = 400 # fixed canvas size
-    resize_dim = (horiz_size,int(horiz_size / aspect))
+    resize_dim = (obj['zoom'],int(obj['zoom'] / aspect))
     s = s.resize(resize_dim,Image.BILINEAR)
-    s = s.rotate(angle,Image.BILINEAR,1)
+    s = s.rotate(obj['angle'],Image.BILINEAR,1)
     
-    image = Image.new('RGB',(blank_size,blank_size))
-    
-    tx = int(pos_x - (0.5 * s.size[0]))
-    ty = int(pos_y - (0.5 * s.size[1]))
+    tx = int(obj['x'] - (0.5 * s.size[0]))
+    ty = int(obj['y'] - (0.5 * s.size[1]))
     
     image.paste( s, (tx,ty) )
     return image
-    
+
+# my own crappy animation pipeline
+def one_frame(canvas,frame):
+    image = Image.new('RGB',(canvas['x'],canvas['y']))
+    for obj in frame['objs']:
+        image = render(image,obj)
+    return image
+
 def ffmpeg(frame_prefix,filename):
     x = 'H:/work2/wowgif/test/a/{}%d.png'.format(frame_prefix)
     process = Popen(['D:/bin/ffmpeg-20151126-git-72eaf72-win64-static/bin/ffmpeg.exe',
     '-loglevel','panic',
     '-y','-r','30','-i',x,filename])
     
-def create(frames):
+def create(canvas,frames):
     for i, frame in enumerate(frames):
-        x = rotated_frame(['UP \'N DOWN'], frame['zoom'], frame['angle'], frame['x'], frame['y'])
+        x = one_frame(canvas,frame)
         filename = 'test/a/bla{}.png'.format(i)
         x.save(filename, "PNG")
         
     ffmpeg('bla','test.gif')
     
 if __name__ == '__main__':
+    canvas = {'x': 400, 'y': 400}
     rotate_pts = [10 * math.cos(i * math.pi / 180.0) for i in range(0,360)]
     #zoom_pts   = [int( 300 + (50 * math.sin(i * math.pi / 180.0)) ) for i in range(0,360)]
     zoom_pts = [300 for i in range(360)]
     y_pts = [200 + 30 * math.cos(i * math.pi / 180.0) for i in range(0,360)]
     
-    frames = [{'zoom': zoom_pts[i], 'angle': rotate_pts[i], 'x':200, 'y': y_pts[i]} for i in range(0,360,10)]
-    create(frames)
+    frames = [ {'objs': [{'text': 'HEY NOW', 'zoom': zoom_pts[i], 'angle': rotate_pts[i], 'x':200, 'y': y_pts[i]}] } for i in range(0,360,10)]
+    create(canvas,frames)
     ffmpeg('bla','test.gif')
     
