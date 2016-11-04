@@ -6,7 +6,18 @@ from PIL import Image, ImageFont, ImageDraw
 def id_generator(size=8, chars=string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
-def get_stamp(textin):
+def color_hex_to_rgba(x):
+    if x.startswith('#'):
+        x = x[1:]
+    def f(y):
+        try:
+            return int(y,16)
+        except ValueError:
+            return 0
+            
+    return ( f(x[0:2]), f(x[2:4]), f(x[4:6]), 0 ) 
+    
+def get_stamp(textin,color):
     font = ImageFont.truetype("impact.ttf", 200)
     
     lines = textin.split('\n')
@@ -25,12 +36,12 @@ def get_stamp(textin):
     for i,text in enumerate(lines):
         draw = ImageDraw.Draw(image)
         pos = ( int(0.5 * (x - sizes[i][0])), y_offset[i] )
-        draw.text(pos, text, font=font, fill=(244,34,114,0))
+        draw.text(pos, text, font=font, fill=color_hex_to_rgba(color))
     
     return image.crop(image.getbbox())
 
 def render(image,obj):
-    s = get_stamp(obj['text'])
+    s = get_stamp(obj['text'],obj['color'])
     x,y = s.size
     aspect = 1.0*x/y
     
