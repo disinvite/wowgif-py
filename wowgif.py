@@ -15,7 +15,7 @@ def color_hex_to_rgba(x):
         except ValueError:
             return 0
             
-    return ( f(x[0:2]), f(x[2:4]), f(x[4:6]), 0 ) 
+    return ( f(x[0:2]), f(x[2:4]), f(x[4:6]), 255 ) 
     
 def get_stamp(textin,color):
     font = ImageFont.truetype("impact.ttf", 200)
@@ -32,7 +32,7 @@ def get_stamp(textin,color):
         y_offset += [ty]
         ty += t[1]
     
-    image = Image.new('RGB',(x,y))
+    image = Image.new('RGBA',(x,y), (0,0,0,0))
     for i,text in enumerate(lines):
         draw = ImageDraw.Draw(image)
         pos = ( int(0.5 * (x - sizes[i][0])), y_offset[i] )
@@ -52,7 +52,11 @@ def render(image,obj):
     tx = int(obj['x'] - (0.5 * s.size[0]))
     ty = int(obj['y'] - (0.5 * s.size[1]))
     
-    image.paste( s, (tx,ty) )
+    r, g, b, a = s.split()
+    pp1 = Image.merge("RGB", (r, g, b))
+    mask = Image.merge("L", (a,))
+    
+    image.paste(pp1, (tx,ty), mask )
     return image
 
 # my own crappy animation pipeline
