@@ -1,4 +1,3 @@
-import math
 import string
 import random
 from subprocess import Popen
@@ -18,11 +17,13 @@ def color_map():
     g = range(0,255) + ([255] * 510) + range(255,0,-1) + ([0] * 510)
     b = ([0] * 510) + range(0,255) + ([255] * 510) + range(255,0,-1)
     return zip(r,g,b)
-    
-def get_color(c):
-    where = int(1530.0 * c / 255)
+
+def get_color():
     cm = color_map()
-    return cm[where]
+    def inner(c):
+        where = int(1530.0 * c / 255)
+        return cm[where]
+    return inner
     
 def create(in_file,out_file):
     temp_id = id_generator()
@@ -33,9 +34,10 @@ def create(in_file,out_file):
     output = Image.new('RGB', grayscale.size)
     pixels = output.load()
 
+    gc = get_color()
     for row in range(0,x):
         for col in range(0,y):
-            pixels[row,col] = get_color(luminance[row,col])
+            pixels[row,col] = gc(luminance[row,col])
     
     output.save(out_file, "PNG")
 
