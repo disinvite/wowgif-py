@@ -13,23 +13,31 @@ def convert(frame_prefix,filename):
     process = Popen([im,'-delay','3','-loop','0',x,filename])
     process.wait()
 
-def get_color(i,n):
-    x = (2 * math.pi * i / n)
-    return (
-        max(0,int( math.cos(x) * 255)),
-        max(0,int( math.sin(x) * 255)),
-        max(0,int(-math.sin(x) * 255))
-    )
+def color_map():    
+    r = ([255] * 255) + range(255,0,-1) + ([0] * 510) + range(0,255) + ([255] * 255)
+    g = range(0,255) + ([255] * 510) + range(255,0,-1) + ([0] * 510)
+    b = ([0] * 510) + range(0,255) + ([255] * 510) + range(255,0,-1)
+    return zip(r,g,b)
+    
+def get_color(c):
+    where = int(1530.0 * c / 255)
+    cm = color_map()
+    return cm[where]
     
 def create(in_file,out_file):
     temp_id = id_generator()
-    x = Image.open(in_file).convert('L')
+    grayscale = Image.open(in_file).convert('L')
+    luminance = grayscale.load()
     
-    colors = [get_color(i,36) for i in range(36)]
-    for i,c in enumerate(colors):
-        print '{} {}'.format(i,c)
+    x,y = grayscale.size
+    output = Image.new('RGB', grayscale.size)
+    pixels = output.load()
+
+    for row in range(0,x):
+        for col in range(0,y):
+            pixels[row,col] = get_color(luminance[row,col])
     
-    x.save(out_file, "PNG")
+    output.save(out_file, "PNG")
 
 if __name__ == '__main__':
     create('test/2336_012.jpg','test/hi_man.png')
