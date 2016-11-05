@@ -25,21 +25,35 @@ def get_color():
         return cm[where]
     return inner
     
+def convert(frame_prefix,filename):
+    im = 'bin/convert.exe'
+    x = 'test/{}_*.png'.format(frame_prefix)
+    process = Popen([im,'-delay','3','-loop','0',x,filename])
+    process.wait()
+    
 def create(in_file,out_file):
+    frames = 60
+    step = 255 / frames
+
     temp_id = id_generator()
     grayscale = Image.open(in_file).convert('L')
     luminance = grayscale.load()
     
     x,y = grayscale.size
-    output = Image.new('RGB', grayscale.size)
-    pixels = output.load()
-
     gc = get_color()
-    for row in range(0,x):
-        for col in range(0,y):
-            pixels[row,col] = gc(luminance[row,col])
+
+    for f in range(0,frames):
+        output = Image.new('RGB', grayscale.size)
+        pixels = output.load()
     
-    output.save(out_file, "PNG")
+        for row in range(0,x):
+            for col in range(0,y):
+                t = luminance[row,col] + (f * step)
+                pixels[row,col] = gc( t % 255 )
+    
+        output.save('test/xy_{0:04d}.png'.format(f), "PNG")
+        
+    convert('xy',out_file)
 
 if __name__ == '__main__':
-    create('test/2336_012.jpg','test/hi_man.png')
+    create('test/2336_012.jpg','test/hi_man.gif')
