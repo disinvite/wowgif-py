@@ -21,8 +21,7 @@ def color_map():
 def get_color():
     cm = color_map()
     def inner(c):
-        where = int(1530.0 * c / 255)
-        return cm[where]
+        return cm[c]
     return inner
     
 def convert(frame_prefix,filename):
@@ -33,7 +32,7 @@ def convert(frame_prefix,filename):
     
 def create(in_file,out_file):
     frames = 60
-    step = 255 / frames
+    step = 1530 / frames
 
     temp_id = id_generator()
     grayscale = Image.open(in_file).convert('L')
@@ -48,8 +47,8 @@ def create(in_file,out_file):
     
         for row in range(0,x):
             for col in range(0,y):
-                t = luminance[row,col] + (f * step)
-                pixels[row,col] = gc( t % 255 )
+                t = (6 * luminance[row,col]) + (f * step)
+                pixels[row,col] = gc( t % 1530 )
     
         output.save('test/xy_{0:04d}.png'.format(f), "PNG")
         
