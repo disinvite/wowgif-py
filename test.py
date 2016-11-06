@@ -35,9 +35,9 @@ def sinusoid(max,n_frames,ofs = 0):
     return [ofs + (max * math.cos(i * math.pi / 180.0)) for i in range(0,360,dx)]
     
 def trails():
-    angles = sinusoid(20,30)
-    angles = angles + angles
-    ys = sinusoid(40,60,190)
+    angles = sinusoid(10,60)
+    ys = sinusoid(40,30,190)
+    ys = ys + ys
     ys = ys[50:60] + ys[0:50] # bump it a little to get that nice oscillation
     
     frames = []
