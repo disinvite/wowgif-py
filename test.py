@@ -29,9 +29,31 @@ def swerve():
         
     return frames
     
+def sinusoid(max,n_frames,ofs = 0):
+    dx = 360 / n_frames
+    return [ofs + (max * math.cos(i * math.pi / 180.0)) for i in range(0,360,dx)]
+    
+def trails():
+    angles = sinusoid(20,30)
+    angles = angles + angles
+    ys = sinusoid(40,60,190)
+    ys = ys[50:60] + ys[0:50] # bump it a little to get that nice oscillation
+    
+    frames = []
+    for i in range(60):
+        text = 'aw yeah'
+        main   = {'text': text, 'color': '#c00000', 'zoom': 350, 'angle': angles[i], 'x':200, 'y': ys[i]}
+        shadow1 = {'text': text, 'color': '#800000', 'zoom': 350, 'angle': angles[(i + 59) % 60], 'x':200, 'y': ys[(i + 59) % 60]}
+        shadow2 = {'text': text, 'color': '#800000', 'zoom': 350, 'angle': angles[(i + 58) % 60], 'x':200, 'y': ys[(i + 58) % 60]}
+        objs = [shadow1, shadow2, main]
+        frames.append({'objs': objs })
+    
+    return frames
+    
 if __name__ == '__main__':
     canvas = {'filename': 's', 'x': 400, 'y': 400}
     #xx = zip(dummy_up_one(),dummy_up_two())
     #frames = [ {'objs': x} for x in xx ]
-    frames = swerve()
+    
+    frames = trails()
     wowgif.create(canvas,frames)
