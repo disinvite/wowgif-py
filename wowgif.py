@@ -3,6 +3,8 @@ import random
 from subprocess import Popen
 from PIL import Image, ImageFont, ImageDraw
 
+stamp_memo = {}
+
 def id_generator(size=6, chars=string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
@@ -18,6 +20,10 @@ def color_hex_to_rgba(x):
     return ( f(x[0:2]), f(x[2:4]), f(x[4:6]), 255 ) 
     
 def get_stamp(textin,color):
+    key = (textin + color).upper()
+    if key in stamp_memo:
+        return stamp_memo[key]
+
     font = ImageFont.truetype("impact.ttf", 200)
     
     lines = textin.split('\n')
@@ -38,7 +44,9 @@ def get_stamp(textin,color):
         pos = ( int(0.5 * (x - sizes[i][0])), y_offset[i] )
         draw.text(pos, text, font=font, fill=color_hex_to_rgba(color))
     
-    return image.crop(image.getbbox())
+    output = image.crop(image.getbbox())
+    stamp_memo[key] = output
+    return output
 
 def render(image,obj):
     s = get_stamp(obj['text'],obj['color'])
