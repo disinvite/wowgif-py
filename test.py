@@ -1,5 +1,6 @@
 import math
 import wowgif
+import starfield
 
 def dummy_up_one():
     rotate_pts = [10 * math.cos(i * math.pi / 180.0) for i in range(0,360)]
@@ -50,10 +51,26 @@ def trails():
     
     return frames
     
+def combined():
+    canvas = {'filename': 'yes', 'x': 400, 'y': 400}
+    frames = trails()
+    sg = starfield.stargen(60)
+    starframes = list(sg)
+    
+    temp_id = wowgif.id_generator()
+    for i, frame in enumerate(frames):
+        img = starframes[i]
+        img = wowgif.one_frame(canvas,frame,img)
+        filename = 'temp/{0}_{1:04d}.png'.format(temp_id,i)
+        img.save(filename, "PNG")
+        
+    outfile = '{}.gif'.format(canvas['filename'])
+    wowgif.convert(temp_id,outfile)
+    
 if __name__ == '__main__':
-    canvas = {'filename': 's', 'x': 400, 'y': 400}
+    combined()
+    #canvas = {'filename': 's', 'x': 400, 'y': 400}
     #xx = zip(dummy_up_one(),dummy_up_two())
     #frames = [ {'objs': x} for x in xx ]
-    
-    frames = trails()
-    wowgif.create(canvas,frames)
+    #frames = trails()
+    #wowgif.create(canvas,frames)

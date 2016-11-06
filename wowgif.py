@@ -68,8 +68,10 @@ def render(image,obj):
     return image
 
 # my own crappy animation pipeline
-def one_frame(canvas,frame):
-    image = Image.new('RGB',(canvas['x'],canvas['y']))
+def one_frame(canvas,frame,image=None):
+    if image is None:
+        image = Image.new('RGB',(canvas['x'],canvas['y']))
+        
     for obj in frame['objs']:
         image = render(image,obj)
     return image

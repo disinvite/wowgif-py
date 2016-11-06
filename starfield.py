@@ -15,8 +15,9 @@ def convert(frame_prefix,filename):
 def get_stars(howmany,x_dim,y_dim):
     return [ [random.randint(0,x_dim - 1), random.randint(0,y_dim - 1)] for _ in range(howmany) ]
     
-def frame(frame_i,farstars,midstars,bigstars):
-    img = Image.new('RGB',(400,400),(29,29,35))
+def frame(farstars,midstars,bigstars,img = None):
+    if img is None:
+        img = Image.new('RGB',(400,400),(29,29,35))
     pix = img.load()
     
     cube_3 = [(x,y) for x in range(0,3) for y in range(0,3)]
@@ -49,26 +50,35 @@ def frame(frame_i,farstars,midstars,bigstars):
             except IndexError:
                 continue
     
-    img.save('test/zz_{0:04d}.png'.format(frame_i),'PNG')
+    return img
     
-def create(out_file):
+def stargen(num_frames):
     farstars = get_stars(30,133,400)
     midstars = get_stars(30,200,400)
     bigstars = get_stars(16,400,400)
-
-    for i in range(30):
-        frame(i,farstars,midstars,bigstars)
+    
+    for i in range(num_frames):
+        img = frame(farstars,midstars,bigstars)
         
         for i,_ in enumerate(farstars):
-            farstars[i][0] = (farstars[i][0] + (133.0 / 30.0)) % 133
+            farstars[i][0] = (farstars[i][0] + (133.0 / num_frames)) % 133
             
         for i,_ in enumerate(midstars):
-            midstars[i][0] = (midstars[i][0] + (200.0 / 30.0)) % 200
+            midstars[i][0] = (midstars[i][0] + (200.0 / num_frames)) % 200
             
         for i,_ in enumerate(bigstars):
-            bigstars[i][0] = (bigstars[i][0] + (400.0 / 30.0)) % 400
+            bigstars[i][0] = (bigstars[i][0] + (400.0 / num_frames)) % 400
 
-        
+        yield img
+    
+def create(out_file):
+    sg = stargen(60)
+
+    i = 0
+    for img in sg:
+        img.save('test/zz_{0:04d}.png'.format(i),'PNG')
+        i += 1
+
     convert('zz',out_file)
 
 if __name__ == '__main__':
