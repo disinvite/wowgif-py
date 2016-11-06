@@ -6,12 +6,6 @@ from PIL import Image
 def id_generator(size=6, chars=string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
-def convert(frame_prefix,filename):
-    im = 'bin/convert.exe'
-    x = 'temp/{}*.png'.format(frame_prefix)
-    process = Popen([im,'-delay','3','-loop','0',x,filename])
-    process.wait()
-
 def color_map():    
     r = ([255] * 255) + range(255,0,-1) + ([0] * 510) + range(0,255) + ([255] * 255)
     g = range(0,255) + ([255] * 510) + range(255,0,-1) + ([0] * 510)
