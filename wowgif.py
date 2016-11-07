@@ -77,7 +77,7 @@ def one_frame(canvas,frame,image=None):
     return image
     
 def convert(frame_prefix,filename):
-    im = 'bin/convert.exe'
+    im = '/opt/local/bin/convert'
     x = 'temp/{}*.png'.format(frame_prefix)
     process = Popen([im,'-delay','3','-loop','0',x,filename])
     process.wait()

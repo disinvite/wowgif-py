@@ -15,11 +15,14 @@ def convert(frame_prefix,filename):
 def get_stars(howmany,x_dim,y_dim):
     return [ [random.randint(0,x_dim - 1), random.randint(0,y_dim - 1)] for _ in range(howmany) ]
     
-def frame(farstars,midstars,bigstars,img = None):
+def frame(canvas,farstars,midstars,bigstars,img = None):
     if img is None:
-        img = Image.new('RGB',(400,400),(29,29,35))
+        img = Image.new('RGB',(canvas['x'],canvas['y']),(29,29,35))
     pix = img.load()
     
+    split_3 = int(canvas['x'] / 3)
+    split_2 = int(canvas['x'] / 2)
+
     cube_3 = [(x,y) for x in range(0,3) for y in range(0,3)]
     cube_2 = [(x,y) for x in range(0,2) for y in range(0,2)]
 
@@ -28,8 +31,8 @@ def frame(farstars,midstars,bigstars,img = None):
         x = int(x)
         try:
             pix[x,y] = (57,83,201)
-            pix[133+x,y] = (57,83,201)
-            pix[267+x,y] = (57,83,201)
+            pix[split_3+x,y] = (57,83,201)
+            pix[(split_3 * 2)+x,y] = (57,83,201)
         except IndexError:
             continue
 
@@ -38,7 +41,7 @@ def frame(farstars,midstars,bigstars,img = None):
         for dx,dy in cube_2:
             try:
                 pix[x+dx,y+dy] = (88,161,241)
-                pix[200+x+dx,y+dy] = (88,161,241)
+                pix[split_2+x+dx,y+dy] = (88,161,241)
             except IndexError:
                 continue
                 
@@ -52,22 +55,26 @@ def frame(farstars,midstars,bigstars,img = None):
     
     return img
     
-def stargen(num_frames):
-    farstars = get_stars(30,133,400)
-    midstars = get_stars(30,200,400)
-    bigstars = get_stars(16,400,400)
+def stargen(num_frames,canvas):
+    split_3 = canvas['x'] / 3
+    split_2 = canvas['x'] / 2
+    split_1 = canvas['x']
+
+    farstars = get_stars(30,split_3,canvas['y'])
+    midstars = get_stars(30,split_2,canvas['y'])
+    bigstars = get_stars(16,split_1,canvas['y'])
     
     for i in range(num_frames):
-        img = frame(farstars,midstars,bigstars)
+        img = frame(canvas,farstars,midstars,bigstars)
         
         for i,_ in enumerate(farstars):
-            farstars[i][0] = (farstars[i][0] + (133.0 / num_frames)) % 133
+            farstars[i][0] = (farstars[i][0] + (1.0 * split_3 / num_frames)) % split_3
             
         for i,_ in enumerate(midstars):
-            midstars[i][0] = (midstars[i][0] + (200.0 / num_frames)) % 200
+            midstars[i][0] = (midstars[i][0] + (1.0 * split_2 / num_frames)) % split_2
             
         for i,_ in enumerate(bigstars):
-            bigstars[i][0] = (bigstars[i][0] + (400.0 / num_frames)) % 400
+            bigstars[i][0] = (bigstars[i][0] + (1.0 * split_1 / num_frames)) % split_1
 
         yield img
     
