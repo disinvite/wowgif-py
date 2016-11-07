@@ -34,26 +34,37 @@ def sinusoid(max,n_frames,ofs = 0):
     dx = 360 / n_frames
     return [ofs + (max * math.cos(i * math.pi / 180.0)) for i in range(0,360,dx)]
     
-def trails():
-    angles = sinusoid(10,60)
-    ys = sinusoid(40,30,190)
-    ys = ys + ys
-    ys = ys[50:60] + ys[0:50] # bump it a little to get that nice oscillation
+def trails(movement = 'bob'):
+    if movement == 'bob':
+        angles = sinusoid(2,60,-10)
+        sizes = [350] * 60
+        ys = sinusoid(40,30,190)
+        ys = ys + ys
+        ys = ys[50:60] + ys[0:50] # bump it a little to get that nice oscillation
+    elif movement == 'swirl':
+        angles = sinusoid(10,60)
+        sizes = [350] * 60
+        ys = sinusoid(40,60,190)
+        ys = ys[50:60] + ys[0:50] # bump it a little to get that nice oscillation
+    elif movement == 'twirl':
+        sizes = map(int,sinusoid(125,60,225))
+        ys = [200] * 60
+        angles = sinusoid(10,60,-12)
     
     frames = []
     for i in range(60):
         text = 'aw yeah'
-        main   = {'text': text, 'color': '#c00000', 'zoom': 350, 'angle': angles[i], 'x':200, 'y': ys[i]}
-        shadow1 = {'text': text, 'color': '#800000', 'zoom': 350, 'angle': angles[(i + 59) % 60], 'x':200, 'y': ys[(i + 59) % 60]}
-        shadow2 = {'text': text, 'color': '#800000', 'zoom': 350, 'angle': angles[(i + 58) % 60], 'x':200, 'y': ys[(i + 58) % 60]}
+        main   = {'text': text, 'color': '#c00000', 'zoom': sizes[i], 'angle': angles[i], 'x':200, 'y': ys[i]}
+        shadow1 = {'text': text, 'color': '#800000', 'zoom': sizes[(i + 59) % 60], 'angle': angles[(i + 59) % 60], 'x':200, 'y': ys[(i + 59) % 60]}
+        shadow2 = {'text': text, 'color': '#800000', 'zoom': sizes[(i + 58) % 60], 'angle': angles[(i + 58) % 60], 'x':200, 'y': ys[(i + 58) % 60]}
         objs = [shadow1, shadow2, main]
         frames.append({'objs': objs })
     
     return frames
     
-def combined():
+def combined(movement):
     canvas = {'filename': 'yes', 'x': 400, 'y': 400}
-    frames = trails()
+    frames = trails(movement)
     sg = starfield.stargen(60)
     starframes = list(sg)
     
@@ -68,7 +79,7 @@ def combined():
     wowgif.convert(temp_id,outfile)
     
 if __name__ == '__main__':
-    combined()
+    combined('twirl')
     #canvas = {'filename': 's', 'x': 400, 'y': 400}
     #xx = zip(dummy_up_one(),dummy_up_two())
     #frames = [ {'objs': x} for x in xx ]
