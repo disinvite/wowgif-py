@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.7/angular.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.js"></script>
+    <style type="text/css">    
+    .bg {
+        background-color: #1d1d23;
+    }
+    .vertical-center {
+        min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+        min-height: 100vh; /* These two lines are counted as one :-)       */
+
+        display: flex;
+        align-items: center;
+    }
+    .jumbotron {
+        margin-bottom: 0;
+    }
+    hr {
+        border-color: #c00000;
+    }
+    h1.page-header {
+        margin-top: 10px;
+        border-color: #c00000;
+        color: #c00000;
+        font-weight: bold;
+        text-shadow: 2px 2px 2px #800000;
+    }
+    .the-box {
+        /*color: #c0ceff*/
+        color: #c00000;
+    }
+    input.wg {
+        background-color: #1d1d23;
+        border-color: #c00000;
+        color: #c00000;
+    }
+    input.wg:focus {
+        border-color: #e00000;
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(233, 0, 0, .6);
+    }
+    
+    ul.wg-list > li {
+        padding: 5px 0;
+    }
+    
+    /* buttons */
+    .btn-default {
+        color: #c00000;
+        background-color: #1d1d23;
+        border-color: #800000;
+    }
+    .btn-default:focus,
+    .btn-default.focus {
+        color: #c00000;
+        background-color: #1d1d23;
+        border-color: #f00000;
+    }
+    .btn-default:hover {
+        color: #c00000;
+        background-color: #1d1d23;
+        border-color: #f00000;
+    }
+    .btn-default:active,
+    .btn-default.active,
+    .open > .dropdown-toggle.btn-default {
+        color: #c00000;
+        background-color: #a00000;
+        border-color: #f00000;
+    }
+    .btn-default:active:hover,
+    .btn-default.active:hover,
+    .open > .dropdown-toggle.btn-default:hover,
+    .btn-default:active:focus,
+    .btn-default.active:focus,
+    .open > .dropdown-toggle.btn-default:focus,
+    .btn-default:active.focus,
+    .btn-default.active.focus,
+    .open > .dropdown-toggle.btn-default.focus {
+        color: #fff;
+        background-color: #a00000;
+        border-color: #f00000;
+    }
+
+    .btn-danger {
+        color: #fff;
+        background-color: #c00000;
+        border-color: #800000;
+    }
+    .btn-danger:focus,
+    .btn-danger.focus {
+        color: #fff;
+        background-color: #a00000;
+        border-color: #800000;
+    }
+    .btn-danger:hover {
+        color: #fff;
+        background-color: #a00000;
+        border-color: #800000;
+    }
+    .btn-danger:active,
+    .btn-danger.active,
+    .open > .dropdown-toggle.btn-danger {
+        color: #fff;
+        background-color: #a00000;
+        border-color: #800000;
+    }
+    
+    
+    
+    
+    /* stealing from myself */
+    .brooklyn {
+        padding: 0;
+        width: 100%;
+        position: relative;
+    }
+    .brooklyn .btn {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        outline: 0 none;
+    }
+    .brooklyn.brooklyn-checkbox > span {
+        display: block;
+        padding: 12px;
+    }
+    .brooklyn.brooklyn-checkbox > span > i {
+        position: absolute;
+        top: 14px;
+        left: 12px;
+        font-size: 16px;
+        transition: all 1ms;
+    }
+    </style>
+</head>
+<body ng-app="wowgif" ng-controller="ctrl">
+<div class="jumbotron vertical-center bg">
+    <div class="container the-box">
+        <div class="row">
+            <div class="col-xs-8 col-xs-offset-2">
+                <h1 class="page-header text-center">make your own jiffs.</h1>
+                <div class="row">
+                    <p class="col-xs-12 text-center">Here's what we're doin' here. <a href="https://i.imgur.com/g2oBmIz.gif"><i>You're gonna wanna click this.</i></a></p>
+                </div>
+                
+                <div class="row">
+                    <div class="col-xs-12">
+                        <label>Your text</label>
+                        <input class="wg form-control input-lg" type="text" ng-model="form.text"/>
+                    </div>
+                </div>
+                
+                <div class="row"><br/></div>
+                
+                <div class="row">
+                    <div class="col-xs-6">
+                        <ul class="list-unstyled wg-list">
+                            <li><label>Options</label></li>
+                            <li><wg-checkbox ng-model="form.stars" caption="Stars"></wg-checkbox></li>
+                            <li><wg-checkbox ng-model="form.trails" caption="Trails" /></wg-checkbox></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-6">
+                        <ul class="list-unstyled wg-list">
+                            <li><label>Movement</label></li>
+                            <li><wg-checkbox ng-model="form.movement" caption="Bob" radio="bob"></wg-checkbox></li>
+                            <li><wg-checkbox ng-model="form.movement" caption="Swirl" radio="swirl"/></wg-checkbox></li>
+                            <li><wg-checkbox ng-model="form.movement" caption="Twist" radio="twist"/></wg-checkbox></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="row"><div class="col-xs-12"><hr/></div></div>
+                
+                <div class="row">
+                    <div class="col-xs-4 col-xs-offset-4">
+                        <div class="form-group form-group-lg">
+                            <button type="button" class="form-control btn btn-danger btn-lg" ng-click="go()">Go!</button>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+function wgCheckbox() {
+    return {
+        restrict: 'E',
+        template:
+            '<div class="brooklyn brooklyn-checkbox">' +
+            '<span class="btn" ng-click="click()">' +
+            '<i class="glyphicon"></i>' +
+            '<span>{{ caption }}</span>' +
+            '</span>' +
+            '</div>',
+        require: 'ngModel',
+        scope: {
+            caption: '@',
+            radio: '@'
+        },
+        link: function(scope, element, attrs, ngModelCtrl) {
+            var container  = angular.element(element.find('div'));
+            var button = angular.element(element.find('span')[0]);
+            var icon = angular.element(element.find('i'));
+
+            if(scope.radio == undefined) {
+                scope.radio = 0;
+            }
+            
+            if(scope.caption == undefined) {
+                scope.caption = '&nbsp;';
+            }
+            
+            scope.click = function() {
+                if(scope.radio) {
+                    scope.val = scope.radio;
+                } else {
+                    scope.val = !scope.val;
+                }
+            }
+
+            ngModelCtrl.$formatters.push(function(modelValue) {
+                return scope.radio ? modelValue : !!modelValue;
+            });
+
+            ngModelCtrl.$render = function() {
+                scope.val = ngModelCtrl.$viewValue;
+                if(scope.radio) {
+                    scope.on = (scope.val == scope.radio);
+                } else {
+                    scope.on = scope.val;
+                }
+                icon.toggleClass('glyphicon-check',scope.on);
+                icon.toggleClass('glyphicon-unchecked',!scope.on);
+                button.toggleClass('btn-danger',scope.on);
+                button.toggleClass('btn-default',!scope.on);
+            }
+
+            scope.$watch('val', function() {
+                ngModelCtrl.$setViewValue(scope.val);
+                ngModelCtrl.$render();
+            });
+
+            ngModelCtrl.$parsers.push(function(viewValue) {
+                return viewValue;
+            });
+        }
+    };
+}
+
+angular.module('wgui', [])
+.directive('wgCheckbox',wgCheckbox);
+
+function ctrl($scope,$http) {
+    $scope.form = {
+        'stars'    : 1,
+        'trails'   : 1,
+        'text': 'aw yeah',
+        'movement' : 'bob'
+    }
+    
+    $scope.go = function() {
+    }
+}
+
+angular.module('wowgif', ['wgui'])
+.controller('ctrl',ctrl);
+</script>
+</body>
+</html>
