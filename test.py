@@ -1,6 +1,5 @@
 import math
-import wowgif
-import starfield
+from wowgif import wowgif, wowtext, starfield
 
 def dummy_up_one():
     rotate_pts = [10 * math.cos(i * math.pi / 180.0) for i in range(0,360)]
@@ -76,7 +75,7 @@ def combined(movement):
     temp_id = wowgif.id_generator()
     for i, frame in enumerate(frames):
         img = starframes[i]
-        img = wowgif.one_frame(canvas,frame,img)
+        img = wowtext.one_frame(canvas,frame,img)
         filename = 'temp/{0}_{1:04d}.png'.format(temp_id,i)
         img.save(filename, "PNG")
         
