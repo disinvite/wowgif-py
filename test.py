@@ -1,6 +1,5 @@
 import math
-import wowgif
-import starfield
+from wowgif import wowgif, starfield, gradient
 
 def dummy_up_one():
     rotate_pts = [10 * math.cos(i * math.pi / 180.0) for i in range(0,360)]
@@ -58,11 +57,20 @@ def trails(canvas,movement = 'bob'):
 
     frames = []
     for i in range(60):
-        text = '"Found a problem"'
-        main   = {'text': text, 'color': '#f4e242', 'zoom': sizes[i], 'angle': angles[i], 'x':center_x, 'y': ys[i]}
-        shadow1 = {'text': text, 'color': '#8e831f', 'zoom': sizes[(i + 59) % 60], 'angle': angles[(i + 59) % 60], 'x':center_x, 'y': ys[(i + 59) % 60]}
-        shadow2 = {'text': text, 'color': '#8e831f', 'zoom': sizes[(i + 58) % 60], 'angle': angles[(i + 58) % 60], 'x':center_x, 'y': ys[(i + 58) % 60]}
-        objs = [shadow1, shadow2, main]
+        text = 'FLORIDA'
+        main   = {'text': text, 'color': '#ffa3ca', 'zoom': sizes[i], 'angle': angles[i], 'x':center_x, 'y': ys[i]}
+        shadow1 = {'text': text, 'color': '#ff89b2', 'zoom': sizes[(i + 59) % 60], 'angle': angles[(i + 59) % 60], 'x':center_x, 'y': ys[(i + 59) % 60]}
+        shadow2 = {'text': text, 'color': '#ff89b2', 'zoom': sizes[(i + 58) % 60], 'angle': angles[(i + 58) % 60], 'x':center_x, 'y': ys[(i + 58) % 60]}
+        shadow3 = {'text': text, 'color': '#ff89b2', 'zoom': sizes[(i + 57) % 60], 'angle': angles[(i + 57) % 60], 'x':center_x, 'y': ys[(i + 57) % 60]}
+
+        # text stroke
+        x0 = {'text': text, 'color': '#ff1668', 'zoom': sizes[i], 'angle': angles[i], 'x':center_x-1, 'y': ys[i]}
+        x1 = {'text': text, 'color': '#ff1668', 'zoom': sizes[i], 'angle': angles[i], 'x':center_x+1, 'y': ys[i]}
+        y0 = {'text': text, 'color': '#ff1668', 'zoom': sizes[i], 'angle': angles[i], 'x':center_x, 'y': ys[i]-1}
+        y1 = {'text': text, 'color': '#ff1668', 'zoom': sizes[i], 'angle': angles[i], 'x':center_x, 'y': ys[i]+1}
+
+        #objs = [shadow1, shadow2, main]
+        objs = [shadow1, shadow2, shadow3, x0,x1,y0,y1, main]
         frames.append({'objs': objs })
     
     return frames
@@ -83,8 +91,27 @@ def combined(movement):
     outfile = '{}.gif'.format(canvas['filename'])
     wowgif.convert(temp_id,outfile)
     
+def miami(movement):
+    #(170,231,232)
+    #(219,169,206)
+
+    canvas = {'filename': 'xyz', 'x': 400, 'y': 400}
+    frames = trails(canvas,movement)
+    bg = gradient.frame(canvas, (170,231,232), (219,169,206))
+
+    temp_id = wowgif.id_generator()
+    for i, frame in enumerate(frames):
+        img = bg.copy()
+        img = wowgif.one_frame(canvas,frame,img)
+        filename = 'temp/{0}_{1:04d}.png'.format(temp_id,i)
+        img.save(filename, "PNG")
+        
+    outfile = '{}.gif'.format(canvas['filename'])
+    wowgif.convert(temp_id,outfile)
+
 if __name__ == '__main__':
-    combined('bob')
+    miami('twirl')
+    #combined('bob')
     #canvas = {'filename': 's', 'x': 400, 'y': 400}
     #xx = zip(dummy_up_one(),dummy_up_two())
     #frames = [ {'objs': x} for x in xx ]
