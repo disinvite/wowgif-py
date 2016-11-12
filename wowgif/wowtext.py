@@ -8,7 +8,7 @@ def get_stamp(textin,color):
     if key in stamp_memo:
         return stamp_memo[key]
 
-    font = ImageFont.truetype("impact.ttf", 200)
+    font = ImageFont.truetype("impact.ttf", 400)
     
     lines = textin.split('\n')
     
@@ -18,7 +18,7 @@ def get_stamp(textin,color):
     
     ty = 0
     y_offset = []
-    for t in sizes[::-1]:
+    for t in sizes:
         y_offset += [ty]
         ty += t[1]
     
