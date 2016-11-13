@@ -52,16 +52,24 @@ def trails(canvas,movement = 'bob'):
         sizes = map(int,sinusoid(s_int,60,s_max))
         ys = [canvas['y'] / 2] * 60
         angles = sinusoid(10,60,-12)
+    elif movement == 'zoom':
+        s_max = int(0.6 * canvas['x'])
+        s_int = int(0.5 * canvas['x'])
+        angles = [0] * canvas['frames']
+        sizes = map(int,sinusoid(s_int,canvas['frames'],s_max))
+        ys = [canvas['y'] / 2] * canvas['frames']
     
     center_x = canvas['x'] / 2
 
     frames = []
-    for i in range(60):
-        text = 'FLORIDA'
+    for i in range(canvas['frames']):
+        text = 'this is\nnot going well'
+        di = [(i + (canvas['frames'] - j)) % canvas['frames'] for j in range(1,4)]
+        
         main   = {'text': text, 'color': '#ffa3ca', 'zoom': sizes[i], 'angle': angles[i], 'x':center_x, 'y': ys[i]}
-        shadow1 = {'text': text, 'color': '#ff89b2', 'zoom': sizes[(i + 59) % 60], 'angle': angles[(i + 59) % 60], 'x':center_x, 'y': ys[(i + 59) % 60]}
-        shadow2 = {'text': text, 'color': '#ff89b2', 'zoom': sizes[(i + 58) % 60], 'angle': angles[(i + 58) % 60], 'x':center_x, 'y': ys[(i + 58) % 60]}
-        shadow3 = {'text': text, 'color': '#ff89b2', 'zoom': sizes[(i + 57) % 60], 'angle': angles[(i + 57) % 60], 'x':center_x, 'y': ys[(i + 57) % 60]}
+        shadow1 = {'text': text, 'color': '#ff89b2', 'zoom': sizes[di[0]], 'angle': angles[di[0]], 'x':center_x, 'y': ys[di[0]]}
+        shadow2 = {'text': text, 'color': '#ff89b2', 'zoom': sizes[di[1]], 'angle': angles[di[1]], 'x':center_x, 'y': ys[di[1]]}
+        shadow3 = {'text': text, 'color': '#ff89b2', 'zoom': sizes[di[2]], 'angle': angles[di[2]], 'x':center_x, 'y': ys[di[2]]}
 
         # text stroke
         x0 = {'text': text, 'color': '#ff1668', 'zoom': sizes[i], 'angle': angles[i], 'x':center_x-1, 'y': ys[i]}
@@ -95,8 +103,9 @@ def miami(movement):
     #(170,231,232)
     #(219,169,206)
 
-    canvas = {'filename': 'xyz', 'x': 400, 'y': 400}
+    canvas = {'filename': 'xyz', 'x': 400, 'y': 400, 'frames': 60}
     frames = trails(canvas,movement)
+    frames = frames[32:52] # what if we don't want a loop
     bg = gradient.frame(canvas, (170,231,232), (219,169,206))
 
     temp_id = wowgif.id_generator()
@@ -110,7 +119,7 @@ def miami(movement):
     wowgif.convert(temp_id,outfile)
 
 if __name__ == '__main__':
-    miami('twirl')
+    miami('zoom')
     #combined('bob')
     #canvas = {'filename': 's', 'x': 400, 'y': 400}
     #xx = zip(dummy_up_one(),dummy_up_two())
